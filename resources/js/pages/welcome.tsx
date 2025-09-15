@@ -1,12 +1,15 @@
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
+import { useTranslation } from '@/hooks/use-translation';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const { t } = useTranslation();
 
     return (
         <>
-            <Head title="Manufacturing ERP System">
+            <Head title={t('comprehensive_erp', 'Manufacturing ERP System')}>
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
             </Head>
@@ -21,12 +24,13 @@ export default function Welcome() {
                             </span>
                         </div>
                         <div className="flex items-center space-x-4">
+                            <LanguageSwitcher />
                             {auth.user ? (
                                 <Link
                                     href={route('dashboard')}
                                     className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                                 >
-                                    Dashboard
+                                    {t('dashboard')}
                                 </Link>
                             ) : (
                                 <>
@@ -34,13 +38,13 @@ export default function Welcome() {
                                         href={route('login')}
                                         className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
                                     >
-                                        Log in
+                                        {t('login')}
                                     </Link>
                                     <Link
                                         href={route('register')}
                                         className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                                     >
-                                        Get Started
+                                        {t('get_started')}
                                     </Link>
                                 </>
                             )}
@@ -52,33 +56,32 @@ export default function Welcome() {
                 <main className="max-w-6xl mx-auto px-6 pb-16">
                     <div className="text-center mb-16">
                         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            🚀 Complete Manufacturing 
-                            <span className="block text-blue-600 dark:text-blue-400">ERP Solution</span>
+                            🚀 {t('comprehensive_erp', 'Complete Manufacturing')}
+                            <span className="block text-blue-600 dark:text-blue-400">{t('comprehensive_erp', 'ERP Solution')}</span>
                         </h1>
                         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                            Streamline your manufacturing operations with our comprehensive Enterprise Resource Planning system. 
-                            Manage inventory, purchasing, sales, finance, and HR with <strong>role-based access control</strong> for different user types.
+                            {t('manage_all_aspects', 'Streamline your manufacturing operations with our comprehensive Enterprise Resource Planning system. Manage inventory, purchasing, sales, finance, and HR with role-based access control for different user types.')}
                         </p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
                             <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
                                 <div className="text-2xl mb-2">👑</div>
                                 <div className="text-sm font-semibold text-blue-800 dark:text-blue-200">Super Admin</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-300">Full Access</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-300">{t('total', 'Full Access')}</div>
                             </div>
                             <div className="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
                                 <div className="text-2xl mb-2">💼</div>
-                                <div className="text-sm font-semibold text-green-800 dark:text-green-200">Sales Manager</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-300">Sales & Customers</div>
+                                <div className="text-sm font-semibold text-green-800 dark:text-green-200">{t('sales', 'Sales')} Manager</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-300">{t('sales', 'Sales')} & {t('customers')}</div>
                             </div>
                             <div className="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg">
                                 <div className="text-2xl mb-2">📦</div>
-                                <div className="text-sm font-semibold text-purple-800 dark:text-purple-200">Inventory Mgr</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-300">Stock & Purchasing</div>
+                                <div className="text-sm font-semibold text-purple-800 dark:text-purple-200">{t('inventory')} Mgr</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-300">Stock & {t('purchasing')}</div>
                             </div>
                             <div className="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg">
                                 <div className="text-2xl mb-2">🤝</div>
                                 <div className="text-sm font-semibold text-orange-800 dark:text-orange-200">Partner User</div>
-                                <div className="text-xs text-gray-600 dark:text-gray-300">Sales Focus</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-300">{t('sales')} Focus</div>
                             </div>
                         </div>
                         <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -88,13 +91,13 @@ export default function Welcome() {
                                         href={route('register')}
                                         className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors shadow-lg"
                                     >
-                                        Start Free Trial
+                                        {t('get_started', 'Start Free Trial')}
                                     </Link>
                                     <Link
                                         href={route('login')}
                                         className="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg font-semibold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-lg"
                                     >
-                                        Sign In
+                                        {t('login', 'Sign In')}
                                     </Link>
                                 </>
                             )}
@@ -103,7 +106,7 @@ export default function Welcome() {
                                     href={route('dashboard')}
                                     className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors shadow-lg"
                                 >
-                                    Go to Dashboard
+                                    {t('dashboard', 'Go to Dashboard')}
                                 </Link>
                             )}
                         </div>
@@ -115,11 +118,11 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">📦</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Inventory Management
+                                    {t('inventory_management')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                Track raw materials, work-in-progress, and finished goods with real-time stock levels and automated reorder alerts.
+                                {t('track_products')}
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
                                 <li>• Real-time stock tracking</li>
@@ -132,14 +135,14 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">🛒</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Purchase Management
+                                    {t('purchasing', 'Purchase')} {t('management')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
                                 Streamline your procurement process with vendor management, purchase orders, and delivery tracking.
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                                <li>• Vendor database</li>
+                                <li>• {t('vendors')} database</li>
                                 <li>• Purchase order automation</li>
                                 <li>• Delivery tracking</li>
                             </ul>
@@ -149,15 +152,15 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">💰</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Sales & Invoicing
+                                    {t('sales_crm')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                Manage customer relationships, sales orders, and automated invoicing to boost your revenue.
+                                {t('manage_customers')}
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                                <li>• Customer management</li>
-                                <li>• Sales order processing</li>
+                                <li>• {t('customers', 'Customer')} {t('management')}</li>
+                                <li>• {t('sales')} order processing</li>
                                 <li>• Automated invoicing</li>
                             </ul>
                         </div>
@@ -166,16 +169,16 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">📊</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Financial Management
+                                    {t('financial_control')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                Complete accounting suite with chart of accounts, general ledger, and financial reporting.
+                                {t('handle_accounting')}
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                                <li>• Chart of accounts</li>
+                                <li>• Chart of {t('accounts')}</li>
                                 <li>• General ledger</li>
-                                <li>• Financial reports</li>
+                                <li>• Financial {t('reports')}</li>
                             </ul>
                         </div>
 
@@ -183,15 +186,15 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">👥</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Human Resources
+                                    {t('hr_management')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                Comprehensive employee management with HR records, payroll integration, and performance tracking.
+                                {t('employee_records')}
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                                <li>• Employee database</li>
-                                <li>• Department management</li>
+                                <li>• {t('employees')} database</li>
+                                <li>• Department {t('management')}</li>
                                 <li>• Payroll integration</li>
                             </ul>
                         </div>
@@ -200,15 +203,15 @@ export default function Welcome() {
                             <div className="flex items-center mb-4">
                                 <span className="text-4xl mr-4">📈</span>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                    Analytics & Reports
+                                    {t('analytics')} & {t('reports')}
                                 </h3>
                             </div>
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
-                                Make data-driven decisions with comprehensive reporting and real-time business intelligence.
+                                Make data-driven decisions with comprehensive reporting and real-time {t('business_intelligence')}.
                             </p>
                             <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
                                 <li>• Real-time dashboards</li>
-                                <li>• Custom reports</li>
+                                <li>• Custom {t('reports')}</li>
                                 <li>• KPI tracking</li>
                             </ul>
                         </div>
@@ -217,7 +220,7 @@ export default function Welcome() {
                     {/* Role-Based Dashboards */}
                     <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border dark:border-gray-700 mb-16">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-8">
-                            🎯 Role-Based Dashboards
+                            🎯 Role-Based {t('dashboard', 'Dashboards')}
                         </h2>
                         <p className="text-gray-600 dark:text-gray-300 text-center mb-8 max-w-2xl mx-auto">
                             Each user type gets a customized dashboard focused on their specific needs and responsibilities.
@@ -227,46 +230,46 @@ export default function Welcome() {
                             {/* Super Admin Dashboard */}
                             <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                                    👑 Super Admin Dashboard
+                                    👑 Super Admin {t('dashboard')}
                                 </h3>
                                 <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                         <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded text-center">
                                             <div className="font-bold text-blue-600">1,234</div>
-                                            <div>Products</div>
+                                            <div>{t('products')}</div>
                                         </div>
                                         <div className="bg-green-100 dark:bg-green-900 p-2 rounded text-center">
                                             <div className="font-bold text-green-600">567</div>
-                                            <div>Customers</div>
+                                            <div>{t('customers')}</div>
                                         </div>
                                         <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded text-center">
                                             <div className="font-bold text-purple-600">89</div>
-                                            <div>Vendors</div>
+                                            <div>{t('vendors')}</div>
                                         </div>
                                         <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded text-center">
                                             <div className="font-bold text-orange-600">156</div>
-                                            <div>Employees</div>
+                                            <div>{t('employees')}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    <li>• Complete overview of all modules</li>
-                                    <li>• Purchase & Sales order tracking</li>
-                                    <li>• Financial and HR metrics</li>
-                                    <li>• Low stock alerts across all products</li>
+                                    <li>• Complete {t('overview')} of all {t('modules')}</li>
+                                    <li>• {t('purchasing')} & {t('sales')} order tracking</li>
+                                    <li>• {t('finance', 'Financial')} and {t('hr')} metrics</li>
+                                    <li>• Low stock alerts across all {t('products')}</li>
                                 </ul>
                             </div>
 
                             {/* Partner User Dashboard */}
                             <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                                    🤝 Partner User Dashboard
+                                    🤝 Partner User {t('dashboard')}
                                 </h3>
                                 <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4">
                                     <div className="grid grid-cols-2 gap-2 text-xs">
                                         <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded text-center">
                                             <div className="font-bold text-blue-600">45</div>
-                                            <div>Sales Orders</div>
+                                            <div>{t('sales')} {t('orders')}</div>
                                         </div>
                                         <div className="bg-amber-100 dark:bg-amber-900 p-2 rounded text-center">
                                             <div className="font-bold text-amber-600">12</div>
@@ -283,8 +286,8 @@ export default function Welcome() {
                                     </div>
                                 </div>
                                 <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    <li>• Sales-focused metrics only</li>
-                                    <li>• Recent sales order history</li>
+                                    <li>• {t('sales')}-focused metrics only</li>
+                                    <li>• Recent {t('sales')} order history</li>
                                     <li>• Monthly revenue tracking</li>
                                     <li>• Low stock finished goods alerts</li>
                                 </ul>
@@ -295,21 +298,21 @@ export default function Welcome() {
                     {/* Dashboard Preview */}
                     <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border dark:border-gray-700 mb-16">
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-8">
-                            📊 Real-Time Business Intelligence
+                            📊 Real-Time {t('business_intelligence')}
                         </h2>
                         <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                                 <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg text-center">
                                     <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">1,234</div>
-                                    <div className="text-sm text-gray-600 dark:text-gray-400">Active Products</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('active')} {t('products')}</div>
                                 </div>
                                 <div className="bg-green-100 dark:bg-green-900 p-4 rounded-lg text-center">
                                     <div className="text-2xl font-bold text-green-600 dark:text-green-400">567</div>
-                                    <div className="text-sm text-gray-600 dark:text-gray-400">Customers</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('customers')}</div>
                                 </div>
                                 <div className="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg text-center">
                                     <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">89</div>
-                                    <div className="text-sm text-gray-600 dark:text-gray-400">Vendors</div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('vendors')}</div>
                                 </div>
                                 <div className="bg-orange-100 dark:bg-orange-900 p-4 rounded-lg text-center">
                                     <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">$125K</div>
@@ -336,7 +339,7 @@ export default function Welcome() {
                                 <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">Super Admin</h3>
                                 <div className="text-center space-y-1 text-sm">
                                     <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">test@example.com</p>
-                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">password</p>
+                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{t('password')}</p>
                                 </div>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">Full system access</p>
                             </div>
@@ -345,27 +348,27 @@ export default function Welcome() {
                                 <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">Partner User</h3>
                                 <div className="text-center space-y-1 text-sm">
                                     <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">partner@example.com</p>
-                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">password</p>
+                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{t('password')}</p>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">Sales-focused dashboard</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">{t('sales')}-focused {t('dashboard')}</p>
                             </div>
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border dark:border-gray-600">
                                 <div className="text-3xl mb-3 text-center">💼</div>
-                                <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">Sales Manager</h3>
+                                <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">{t('sales')} Manager</h3>
                                 <div className="text-center space-y-1 text-sm">
                                     <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">sales_manager@example.com</p>
-                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">password</p>
+                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{t('password')}</p>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">Sales & customers</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">{t('sales')} & {t('customers')}</p>
                             </div>
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border dark:border-gray-600">
                                 <div className="text-3xl mb-3 text-center">📦</div>
-                                <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">Inventory Manager</h3>
+                                <h3 className="font-bold text-gray-900 dark:text-white text-center mb-2">{t('inventory')} Manager</h3>
                                 <div className="text-center space-y-1 text-sm">
                                     <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">inventory_manager@example.com</p>
-                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">password</p>
+                                    <p className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{t('password')}</p>
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">Inventory & purchasing</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">{t('inventory')} & {t('purchasing')}</p>
                             </div>
                         </div>
                     </div>
@@ -384,13 +387,13 @@ export default function Welcome() {
                                     href={route('register')}
                                     className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
                                 >
-                                    Start Your Free Trial
+                                    {t('get_started', 'Start Your Free Trial')}
                                 </Link>
                                 <Link
                                     href={route('login')}
                                     className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors"
                                 >
-                                    Sign In Now
+                                    {t('login', 'Sign In Now')}
                                 </Link>
                             </div>
                         ) : (
@@ -398,7 +401,7 @@ export default function Welcome() {
                                 href={route('dashboard')}
                                 className="inline-block px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
                             >
-                                Access Your Dashboard
+                                {t('dashboard', 'Access Your Dashboard')}
                             </Link>
                         )}
                     </div>

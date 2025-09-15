@@ -1,6 +1,7 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
+import { useTranslation } from '@/hooks/use-translation';
 
 interface FullMetrics {
   total_customers: number;
@@ -69,6 +70,7 @@ export default function Dashboard({
   lowStockProducts,
   dashboardType = 'full',
 }: Props) {
+  const { t } = useTranslation();
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -99,7 +101,7 @@ export default function Dashboard({
 
   return (
     <AppShell>
-      <Head title="ERP Dashboard" />
+      <Head title={`ERP ${t('dashboard')}`} />
 
       <div className="p-6">
         {/* Header */}

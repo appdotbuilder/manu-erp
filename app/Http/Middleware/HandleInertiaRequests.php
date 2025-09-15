@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -39,6 +42,29 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        // Handle locale setting
+        $supportedLocales = ['en', 'id'];
+        $locale = 'en'; // Default locale
+
+        // Check for locale in query parameter
+        if ($request->has('lang') && in_array($request->get('lang'), $supportedLocales)) {
+            $locale = $request->get('lang');
+            Session::put('locale', $locale);
+        }
+        // Check for locale in session
+        elseif (Session::has('locale') && in_array(Session::get('locale'), $supportedLocales)) {
+            $locale = Session::get('locale');
+        }
+
+        App::setLocale($locale);
+
+        // Load translations
+        $translations = [];
+        $langPath = base_path("lang/{$locale}.json");
+        if (File::exists($langPath)) {
+            $translations = json_decode(File::get($langPath), true) ?? [];
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -51,6 +77,8 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'locale' => $locale,
+            'translations' => $translations,
         ];
     }
 }
