@@ -18,6 +18,22 @@ class ErpDashboardController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+        
+        // Check if user is a partner user for simplified dashboard
+        if ($user->hasRole('partner_user')) {
+            return $this->partnerDashboard();
+        }
+        
+        // Super Admin or other roles get full dashboard
+        return $this->fullDashboard();
+    }
+
+    /**
+     * Display the full admin dashboard.
+     */
+    protected function fullDashboard()
+    {
         // Get key metrics
         $metrics = [
             'total_customers' => Customer::active()->count(),
@@ -48,13 +64,51 @@ class ErpDashboardController extends Controller
             ->take(10)
             ->get();
 
-
-
         return Inertia::render('dashboard', [
             'metrics' => $metrics,
             'recentPurchaseOrders' => $recentPurchaseOrders,
             'recentSalesOrders' => $recentSalesOrders,
             'lowStockProducts' => $lowStockProducts,
+            'dashboardType' => 'full',
+        ]);
+    }
+
+    /**
+     * Display the partner user dashboard focused on sales.
+     */
+    protected function partnerDashboard()
+    {
+        // Sales-focused metrics
+        $metrics = [
+            'total_sales_orders' => SalesOrder::count(),
+            'pending_sales_orders' => SalesOrder::whereIn('status', ['draft', 'confirmed'])->count(),
+            'monthly_revenue' => SalesOrder::where('status', 'delivered')
+                ->whereBetween('order_date', [now()->startOfMonth(), now()->endOfMonth()])
+                ->sum('total_amount'),
+            'low_stock_finished_goods' => Product::lowStock()
+                ->where('type', 'finished_goods')
+                ->active()
+                ->count(),
+        ];
+
+        // Recent sales orders
+        $recentSalesOrders = SalesOrder::with('customer')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        // Low stock finished goods only
+        $lowStockProducts = Product::lowStock()
+            ->where('type', 'finished_goods')
+            ->active()
+            ->take(10)
+            ->get();
+
+        return Inertia::render('dashboard', [
+            'metrics' => $metrics,
+            'recentSalesOrders' => $recentSalesOrders,
+            'lowStockProducts' => $lowStockProducts,
+            'dashboardType' => 'partner',
         ]);
     }
 }

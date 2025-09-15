@@ -2,7 +2,7 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import { AppShell } from '@/components/app-shell';
 
-interface Metrics {
+interface FullMetrics {
   total_customers: number;
   total_vendors: number;
   total_products: number;
@@ -12,6 +12,15 @@ interface Metrics {
   pending_sales_orders: number;
   monthly_revenue: number;
 }
+
+interface PartnerMetrics {
+  total_sales_orders: number;
+  pending_sales_orders: number;
+  monthly_revenue: number;
+  low_stock_finished_goods: number;
+}
+
+type Metrics = FullMetrics | PartnerMetrics;
 
 interface PurchaseOrder {
   id: number;
@@ -46,17 +55,19 @@ interface Product {
 
 interface Props {
   metrics: Metrics;
-  recentPurchaseOrders: PurchaseOrder[];
+  recentPurchaseOrders?: PurchaseOrder[];
   recentSalesOrders: SalesOrder[];
   lowStockProducts: Product[];
+  dashboardType?: 'full' | 'partner';
   [key: string]: unknown;
 }
 
 export default function Dashboard({
   metrics,
-  recentPurchaseOrders,
+  recentPurchaseOrders = [],
   recentSalesOrders,
   lowStockProducts,
+  dashboardType = 'full',
 }: Props) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -94,162 +105,229 @@ export default function Dashboard({
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            🏭 Manufacturing ERP Dashboard
+            {dashboardType === 'partner' ? '🤝 Sales Partner Dashboard' : '🏭 Manufacturing ERP Dashboard'}
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Welcome to your comprehensive business management system
+            {dashboardType === 'partner' 
+              ? 'Your sales performance and inventory overview' 
+              : 'Welcome to your comprehensive business management system'
+            }
           </p>
         </div>
 
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-500 rounded-lg">
-                <span className="text-white text-2xl">👥</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Customers</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.total_customers.toLocaleString()}
-                </p>
+        {dashboardType === 'partner' ? (
+          // Partner Dashboard Metrics
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-500 rounded-lg">
+                  <span className="text-white text-2xl">🛒</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sales Orders</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as PartnerMetrics).total_sales_orders.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-500 rounded-lg">
-                <span className="text-white text-2xl">🏪</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Vendors</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.total_vendors.toLocaleString()}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-amber-500 rounded-lg">
+                  <span className="text-white text-2xl">⏳</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Orders</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as PartnerMetrics).pending_sales_orders}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-500 rounded-lg">
-                <span className="text-white text-2xl">📦</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Products</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.total_products.toLocaleString()}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-600 rounded-lg">
+                  <span className="text-white text-2xl">💰</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {formatCurrency((metrics as PartnerMetrics).monthly_revenue)}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-orange-500 rounded-lg">
-                <span className="text-white text-2xl">👨‍💼</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Employees</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.total_employees.toLocaleString()}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-red-500 rounded-lg">
+                  <span className="text-white text-2xl">⚠️</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Low Stock Items</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as PartnerMetrics).low_stock_finished_goods}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        ) : (
+          // Full Admin Dashboard Metrics
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-500 rounded-lg">
+                  <span className="text-white text-2xl">👥</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Customers</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).total_customers.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-red-500 rounded-lg">
-                <span className="text-white text-2xl">⚠️</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Low Stock</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.low_stock_products}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-500 rounded-lg">
+                  <span className="text-white text-2xl">🏪</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Vendors</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).total_vendors.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-cyan-500 rounded-lg">
-                <span className="text-white text-2xl">📋</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending POs</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.pending_purchase_orders}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-purple-500 rounded-lg">
+                  <span className="text-white text-2xl">📦</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Products</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).total_products.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-indigo-500 rounded-lg">
-                <span className="text-white text-2xl">🛒</span>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending SOs</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {metrics.pending_sales_orders}
-                </p>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-orange-500 rounded-lg">
+                  <span className="text-white text-2xl">👨‍💼</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Employees</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).total_employees.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-600 rounded-lg">
-                <span className="text-white text-2xl">💰</span>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-red-500 rounded-lg">
+                  <span className="text-white text-2xl">⚠️</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Low Stock</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).low_stock_products}
+                  </p>
+                </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatCurrency(metrics.monthly_revenue)}
-                </p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-cyan-500 rounded-lg">
+                  <span className="text-white text-2xl">📋</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending POs</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).pending_purchase_orders}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-indigo-500 rounded-lg">
+                  <span className="text-white text-2xl">🛒</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending SOs</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {(metrics as FullMetrics).pending_sales_orders}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-600 rounded-lg">
+                  <span className="text-white text-2xl">💰</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {formatCurrency((metrics as FullMetrics).monthly_revenue)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Recent Purchase Orders */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              📋 Recent Purchase Orders
-            </h3>
-            <div className="space-y-4">
-              {recentPurchaseOrders.map((po) => (
-                <div key={po.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">{po.po_number}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{po.vendor.name}</p>
+        <div className={`grid gap-8 mb-8 ${dashboardType === 'partner' ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
+          {/* Recent Purchase Orders - Only show for full dashboard */}
+          {dashboardType === 'full' && (
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                📋 Recent Purchase Orders
+              </h3>
+              <div className="space-y-4">
+                {recentPurchaseOrders.map((po) => (
+                  <div key={po.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">{po.po_number}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{po.vendor.name}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {formatCurrency(po.total_amount)}
+                      </p>
+                      {getStatusBadge(po.status)}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {formatCurrency(po.total_amount)}
-                    </p>
-                    {getStatusBadge(po.status)}
-                  </div>
-                </div>
-              ))}
-              {recentPurchaseOrders.length === 0 && (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                  No recent purchase orders
-                </p>
-              )}
+                ))}
+                {recentPurchaseOrders.length === 0 && (
+                  <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+                    No recent purchase orders
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Recent Sales Orders */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              🛒 Recent Sales Orders
+              🛒 {dashboardType === 'partner' ? 'Your Recent Sales Orders' : 'Recent Sales Orders'}
             </h3>
             <div className="space-y-4">
               {recentSalesOrders.map((so) => (
@@ -279,7 +357,7 @@ export default function Dashboard({
         {lowStockProducts.length > 0 && (
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border dark:border-gray-700 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              ⚠️ Low Stock Alert
+              ⚠️ {dashboardType === 'partner' ? 'Low Stock Finished Goods' : 'Low Stock Alert'}
               <span className="ml-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                 {lowStockProducts.length}
               </span>

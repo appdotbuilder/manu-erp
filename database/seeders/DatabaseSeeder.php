@@ -13,12 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
+        // Seed roles and permissions first
+        $this->call(RolesAndPermissionsSeeder::class);
+        
         // Seed ERP data
         $this->call(ErpSeeder::class);
     }
